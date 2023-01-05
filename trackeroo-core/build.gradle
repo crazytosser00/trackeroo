@@ -50,17 +50,25 @@ task sourceJar(type: Jar) {
 }
 
 project.afterEvaluate {
-    publishToMavenLocal {
-        publishing {
-            publications {
-                LibraryRelease(MavenPublication) {
-                    from components.release
-                    artifact(sourceJar)
-                    setGroupId "ru.roansa.trackeroo"
-                    setArtifactId "trackeroo-core"
-                    version "0.1.1-alpha"
-                }
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact(sourceJar) // optional sources
             }
+        }
+    }
+//    publishToMavenLocal {
+//        publishing {
+//            publications {
+//                LibraryRelease(MavenPublication) {
+//                    from components.release
+//                    artifact(sourceJar)
+//                    setGroupId "ru.roansa.trackeroo"
+//                    setArtifactId "trackeroo-core"
+//                    version "0.1.1-alpha"
+//                }
+//            }
 //            publications.all {
 //                pom.withXml {
 //                    final dependenciesNode = asNode().appendNode("dependencies")
@@ -104,8 +112,8 @@ project.afterEvaluate {
 //                    configurations.implementation.getDependencies().each { dep -> addDependency(dep, "runtime") }
 //                }
 //            }
-        }
-    }
+//        }
+//    }
 }
 
 task cleanBuildPublishLocal(type: GradleBuild) {
