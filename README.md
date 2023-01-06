@@ -1,4 +1,5 @@
 ## Trackeroo
+[![](https://jitpack.io/v/crazytosser00/trackeroo.svg)](https://jitpack.io/#crazytosser00/trackeroo)
 
 This is an All-in-One tracking and logging library for Android projects. You only need to add
 library in your project and initialize it with builder. Trackeroo affects not only your code but
