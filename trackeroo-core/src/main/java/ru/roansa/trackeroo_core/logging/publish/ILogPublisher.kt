@@ -2,8 +2,8 @@ package ru.roansa.trackeroo_core.logging.publish
 
 import java.io.File
 
-interface ILogPublisher {
+interface ILogPublisher<T> {
 
-    fun publish(file: File)
+    fun publish(file: File): T
 
 }

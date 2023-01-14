@@ -14,8 +14,9 @@ object Logger {
 
     private var logWriter: ILogWriter? = null
     private var logFormatter: LogFormatter? = null
-    private var logPublisher: ILogPublisher? = null
-    private var logFileConfig: LogFileConfig? = null
+    private var logPublisher: ILogPublisher<*>? = null
+    var logFileConfig: LogFileConfig? = null
+        private set
 
     fun init(
         context: Context,
@@ -43,11 +44,10 @@ object Logger {
         this@Logger.logPublisher = logPublisher
     }
 
-    fun publish() {
+    fun publish(): Any? =
         logWriter?.logFileConfig?.run {
             logPublisher?.publish(logFile)
         }
-    }
 
     fun clearLogs() {
         logWriter?.clear()
@@ -176,7 +176,7 @@ object Logger {
 
         internal lateinit var logWriter: ILogWriter
             private set
-        internal lateinit var logPublisher: ILogPublisher
+        internal lateinit var logPublisher: ILogPublisher<*>
             private set
         internal var logFormatter: LogFormatter = LogFormatter()
             private set
@@ -186,7 +186,7 @@ object Logger {
             return this
         }
 
-        fun setLogPublisher(logPublisher: ILogPublisher): Builder {
+        fun setLogPublisher(logPublisher: ILogPublisher<*>): Builder {
             this.logPublisher = logPublisher
             return this
         }

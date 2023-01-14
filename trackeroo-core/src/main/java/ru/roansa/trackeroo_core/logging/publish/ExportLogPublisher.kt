@@ -7,7 +7,7 @@ import androidx.core.content.FileProvider
 import java.io.File
 import java.net.URLConnection
 
-class ExportLogPublisher(private val context: Context) : ILogPublisher {
+class ExportLogPublisher(private val context: Context) : ILogPublisher<Unit> {
 
     override fun publish(file: File) {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)

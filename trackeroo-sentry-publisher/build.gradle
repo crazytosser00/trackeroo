@@ -5,9 +5,9 @@ plugins {
 }
 
 android {
-    namespace 'ru.roansa.trackeroo_core'
+    namespace 'ru.roansa.sentry_publisher'
     compileSdk 32
-    version '0.1.2-alpha'
+    version '1.0'
 
     defaultConfig {
         minSdk 21
@@ -33,18 +33,19 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+
+    compileOnly libs.sentry
+//    compileOnly libs.trackeroo.core
+    compileOnly project(':trackeroo-core')
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
 /**
  * Publishing block
  */
-//TODO move to groovy script
 task sourceJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier "sources"
