@@ -1,10 +1,10 @@
-package ru.roansa.trackeroo_core.logging
+package ru.roansa.trackeroo_core.logging.file
 
 import java.io.File
 
 interface ILogWriter {
 
-    val logFile: File
+    val logFileConfig: LogFileConfig?
 
     fun clear()
     //TODO make string nullable

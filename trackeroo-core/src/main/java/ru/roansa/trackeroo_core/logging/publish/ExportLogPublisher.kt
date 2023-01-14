@@ -1,4 +1,4 @@
-package ru.roansa.trackeroo_core.publish
+package ru.roansa.trackeroo_core.logging.publish
 
 import android.content.ClipData
 import android.content.Context
@@ -18,6 +18,7 @@ class ExportLogPublisher(private val context: Context) : ILogPublisher {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(Intent.EXTRA_STREAM, uri)
         }
+        //TODO add exception when no activity can handle ACTION_SEND intent
         context.startActivity(intent)
     }
 

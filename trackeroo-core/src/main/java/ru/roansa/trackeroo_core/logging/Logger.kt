@@ -3,25 +3,33 @@ package ru.roansa.trackeroo_core.logging
 import android.content.Context
 import android.util.Log
 import ru.roansa.trackeroo_core.logging.transform.*
-import ru.roansa.trackeroo_core.publish.ExportLogPublisher
-import ru.roansa.trackeroo_core.publish.ILogPublisher
-import kotlin.math.log
+import ru.roansa.trackeroo_core.logging.publish.ExportLogPublisher
+import ru.roansa.trackeroo_core.logging.publish.ILogPublisher
+import ru.roansa.trackeroo_core.logging.file.ILogWriter
+import ru.roansa.trackeroo_core.logging.file.LogFileConfig
+import ru.roansa.trackeroo_core.logging.file.LogTextFileWriter
 
+//TODO add exceptions to necessary fields when it is not initialized
 object Logger {
 
     private var logWriter: ILogWriter? = null
     private var logFormatter: LogFormatter? = null
     private var logPublisher: ILogPublisher? = null
+    private var logFileConfig: LogFileConfig? = null
 
-    //TODO move file data to new class
-    private var logFileName: String = "log.txt"
-
-    fun init(): Builder = Builder()
+    fun init(
+        context: Context,
+        logDirectoryName: String = LogFileConfig.DEFAULT_DIRECTORY_NAME,
+        logFileName: String = LogFileConfig.DEFAULT_FILE_NAME
+    ): Builder {
+        val builder = Builder(context, logDirectoryName, logFileName)
+        logFileConfig = builder.logFileConfig
+        return builder
+    }
 
     fun default(context: Context) {
-        logPublisher = ExportLogPublisher(context)
-        init()
-            .setLogWriter(LogFileWriter("trackeroo", logFileName, context, true))
+        init(context)
+            .setLogWriter(LogTextFileWriter(logFileConfig, true))
             .setLogPublisher(ExportLogPublisher(context))
             .addLogTransformer(TimeTransformer())
             .addLogTransformer(DebugLevelTransformer())
@@ -33,13 +41,16 @@ object Logger {
         this@Logger.logWriter = logWriter
         this@Logger.logFormatter = logFormatter
         this@Logger.logPublisher = logPublisher
-        logFileName?.run { this@Logger.logFileName = this }
     }
 
     fun publish() {
-        logWriter?.run {
+        logWriter?.logFileConfig?.run {
             logPublisher?.publish(logFile)
         }
+    }
+
+    fun clearLogs() {
+        logWriter?.clear()
     }
 
     @JvmStatic
@@ -149,16 +160,26 @@ object Logger {
         return Log.println(priority, tag, message)
     }
 
-    class Builder {
+    class Builder(internal var logFileConfig: LogFileConfig) {
 
-        lateinit var logWriter: ILogWriter
-            private set
-        lateinit var logPublisher: ILogPublisher
-            private set
-        var logFormatter: LogFormatter = LogFormatter()
-            private set
-        var logFileName: String? = null
+        constructor(
+            context: Context,
+            logDirectoryName: String = LogFileConfig.DEFAULT_DIRECTORY_NAME,
+            logFileName: String = LogFileConfig.DEFAULT_FILE_NAME
+        ) : this(
+            LogFileConfig(
+                context.filesDir.toString(),
+                logDirectoryName,
+                logFileName
+            )
+        )
 
+        internal lateinit var logWriter: ILogWriter
+            private set
+        internal lateinit var logPublisher: ILogPublisher
+            private set
+        internal var logFormatter: LogFormatter = LogFormatter()
+            private set
 
         fun setLogWriter(logWriter: ILogWriter): Builder {
             this.logWriter = logWriter
@@ -167,11 +188,6 @@ object Logger {
 
         fun setLogPublisher(logPublisher: ILogPublisher): Builder {
             this.logPublisher = logPublisher
-            return this
-        }
-
-        fun setLogFileName(logFileName: String): Builder {
-            this.logFileName = logFileName
             return this
         }
 
