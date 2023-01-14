@@ -19,10 +19,10 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('trackerooCoreVer', '0.1.2-alpha')
+            version('trackerooCoreVer', '0.1.3-alpha')
             version('sentryVer', '6.11.0')
 
-            library('trackeroo-core', 'com.github.crazytosser00', 'trackeroo').versionRef('trackerooCoreVer')
+            library('trackeroo-core', 'com.github.crazytosser00.trackeroo', 'trackeroo-core').versionRef('trackerooCoreVer')
             library('sentry', 'io.sentry', 'sentry-android').versionRef('sentryVer')
         }
     }
