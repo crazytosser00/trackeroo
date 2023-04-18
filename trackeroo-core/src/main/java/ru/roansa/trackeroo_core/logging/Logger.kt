@@ -46,6 +46,7 @@ object Logger {
 
     fun publish(): Any? =
         logWriter?.logFileConfig?.run {
+            d("File path", "$logFile")
             logPublisher?.publish(logFile)
         }
 

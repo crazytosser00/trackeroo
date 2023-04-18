@@ -17,7 +17,7 @@ class App : Application() {
         super.onCreate()
         Logger.init(applicationContext)
             .setLogWriter(LogTextFileWriter(Logger.logFileConfig, true))
-            .setLogPublisher(SentryAttachmentPublisher())
+            .setLogPublisher(ExportLogPublisher(applicationContext))
             .addLogTransformer(TimeTransformer())
             .addLogTransformer(DebugLevelTransformer())
             .addLogTransformer(MessageTransformer())

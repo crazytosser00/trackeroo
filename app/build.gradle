@@ -46,7 +46,10 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation project(":trackeroo-core")
-    implementation project(":trackeroo-sentry-publisher")
+//    implementation project(":trackeroo-sentry-publisher")
+//    implementation libs.trackeroo.core
+    implementation libs.trackeroo.sentryPublisher
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

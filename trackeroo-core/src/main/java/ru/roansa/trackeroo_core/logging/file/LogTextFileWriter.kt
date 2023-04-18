@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import ru.roansa.trackeroo_core.ext.doIfExist
 import java.io.File
 
 class LogTextFileWriter(
@@ -12,6 +13,7 @@ class LogTextFileWriter(
     private val printOnNewLine: Boolean = true
 ) : ILogWriter {
 
+    private val logFile: File? get() = logFileConfig?.logFile
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val logFlow = MutableSharedFlow<String>(
         replay = 0,
@@ -19,11 +21,13 @@ class LogTextFileWriter(
     )
 
     init {
+        if (logFile?.exists() != null) logFile?.createNewFile()
+
         coroutineScope.launch {
             logFlow.collect { str ->
-                if (logFileConfig?.logDirectory?.exists() == false) logFileConfig.logDirectory.mkdirs()
+                if (logFileConfig?.logDirectory?.exists() != true) logFileConfig?.logDirectory?.mkdirs()
 
-                logFileConfig?.logFile?.run {
+                logFile.doIfExist {
                     appendText(str)
                     if (printOnNewLine) appendText("\n")
                 }
@@ -36,7 +40,11 @@ class LogTextFileWriter(
     }
 
     override fun clear() {
-        logFileConfig?.logFile?.writeText("")
+        logFile.doIfExist { writeText("") }
+    }
+
+    private fun createFileIfNotExist() {
+        logFile?.createNewFile()
     }
 
 }

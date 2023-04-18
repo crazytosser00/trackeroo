@@ -14,6 +14,7 @@ class LogFileConfig(
         /**
          * This is the default path to directory where log file are stored
          * Full default path to directory is /data/user/{your.package.name}/files/trackeroo
+         * Or /data/data/{your.package.name}/files/trackeroo
          */
         const val DEFAULT_DIRECTORY_NAME = "trackeroo"
 
