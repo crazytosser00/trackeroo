@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'ru.roansa.trackeroo.trackeroo-plugin' version '0.2.1-alpha' apply false
+//    id 'ru.roansa.trackeroo.trackeroo-plugin' version '0.2.1-alpha' apply false
 }
 
 android {
