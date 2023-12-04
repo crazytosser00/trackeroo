@@ -26,11 +26,16 @@ open class LogFormatter {
     fun isEmpty() = transformers.isEmpty()
 
     open fun transform(logEntity: LogEntity): String {
-        var transformedString = ""
-        transformers.forEach { transformer ->
-            transformedString += transformer.transform(transformedString, logEntity)
-        }
-        return transformedString
+        //FIXME remove unused transformed string and parameters in transformer.transform()
+        var transformedString = logEntity.message ?: ""
+        val builder = StringBuilder()
+        transformers
+            .filter { it.shouldTransform(logEntity) }
+            .forEach { transformer ->
+                //TODO refactor this part. Maybe i may use better solution?
+                builder.append(transformer.transform(transformedString, logEntity))
+            }
+        return builder.toString()
     }
 
 }

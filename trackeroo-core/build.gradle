@@ -6,12 +6,13 @@ plugins {
 
 android {
     namespace 'ru.roansa.trackeroo_core'
-    compileSdk 32
-    version '0.1.2-alpha'
+    compileSdk 33
+    version '0.1.4-alpha'
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        //noinspection EditedTargetSdkVersion
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -33,7 +34,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core:1.8.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 
     testImplementation 'junit:junit:4.13.2'

@@ -5,10 +5,6 @@ buildscript {
         google()
         mavenCentral()
         mavenLocal()
-        maven { url "https://jitpack.io" }
-    }
-    dependencies {
-        classpath("com.github.crazytosser00:trackeroo-plugin:0.1.1-alpha")
     }
 }
 

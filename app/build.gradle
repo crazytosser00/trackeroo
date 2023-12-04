@@ -1,17 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'ru.roansa.trackeroo.trackeroo-plugin'
+    id 'ru.roansa.trackeroo.trackeroo-plugin' version '0.2.1-alpha' apply false
 }
 
 android {
     namespace 'ru.roansa.trackeroo'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "ru.roansa.trackeroo"
-        minSdk 21
-        targetSdk 32
+        minSdk 23
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -46,6 +46,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation project(":trackeroo-core")
+//    api "ru.roansa.trackeroo_core:trackeroo-core:0.1.2-alpha"
 //    implementation project(":trackeroo-sentry-publisher")
 //    implementation libs.trackeroo.core
     implementation libs.trackeroo.sentryPublisher
