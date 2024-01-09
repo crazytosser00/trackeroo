@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.GestureDetectorCompat
 import ru.roansa.trackeroo_core.logging.Logger
 
-class TrackerooWindowCallback(
+internal class TrackerooWindowCallback(
     val delegate: Window.Callback,
     private val gestureListener: TrackerooGestureListener,
     private val context: Context,

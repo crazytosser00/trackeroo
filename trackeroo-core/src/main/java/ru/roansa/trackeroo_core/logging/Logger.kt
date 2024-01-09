@@ -1,6 +1,7 @@
 package ru.roansa.trackeroo_core.logging
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import ru.roansa.trackeroo_core.hookers.ViewHooker
 import ru.roansa.trackeroo_core.logging.file.ILogFileWriter
@@ -227,7 +228,7 @@ object Logger {
         ) : this(
             context,
             LogFileConfig(
-                context.filesDir.toString(),
+                ContextWrapper(context).filesDir.toString(),
                 logDirectoryName,
                 logFileName
             )

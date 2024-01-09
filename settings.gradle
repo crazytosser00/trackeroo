@@ -35,3 +35,4 @@ rootProject.name = "trackeroo"
 include ':app'
 include ':trackeroo-core'
 include ':trackeroo-sentry-publisher'
+include ':trackeroo-core-noop'

@@ -5,13 +5,12 @@ plugins {
 }
 
 android {
-    namespace 'ru.roansa.trackeroo_core'
+    namespace 'ru.roansa.trackeroo_core_noop'
     compileSdk 33
     version '0.2-alpha'
 
     defaultConfig {
         minSdk 21
-        //noinspection EditedTargetSdkVersion
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -34,6 +33,7 @@ android {
 }
 
 dependencies {
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.core:core:1.8.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"

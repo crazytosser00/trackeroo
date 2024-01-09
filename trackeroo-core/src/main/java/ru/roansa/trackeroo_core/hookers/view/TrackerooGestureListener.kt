@@ -10,13 +10,13 @@ import ru.roansa.trackeroo_core.logging.Logger
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 
-class TrackerooGestureListener(currentActivity: Activity) :
+internal class TrackerooGestureListener(currentActivity: Activity) :
     GestureDetector.OnGestureListener {
 
     private val activityRef: WeakReference<Activity> = WeakReference(currentActivity)
     private val scrollState: ScrollState = ScrollState()
 
-    fun onUp(event: MotionEvent) {
+    internal fun onUp(event: MotionEvent) {
         val decorView = checkWindowDecorView("onUp")
         val scrollTarget = scrollState.target
         if (decorView == null || scrollTarget == null || scrollState.type == null) return
@@ -153,11 +153,11 @@ internal class ScrollState(
         startY = 0f
     }
 
-    enum class Direction {
+    internal enum class Direction {
         RIGHT, LEFT, UP, DOWN
     }
 
-    enum class Type {
+    internal enum class Type {
         SCROLL, SWIPE
     }
 }

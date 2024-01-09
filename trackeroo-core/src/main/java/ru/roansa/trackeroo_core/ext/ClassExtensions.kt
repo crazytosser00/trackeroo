@@ -8,7 +8,7 @@ import ru.roansa.trackeroo_core.logging.Logger
  *  @param clazz – full class name
  *  @return a Class<?> if it's available, or null
  */
-fun loadClass(clazz: String): Class<*>? {
+internal fun loadClass(clazz: String): Class<*>? {
     return try {
         Class.forName(clazz)
     } catch (ex: ClassCastException) {
@@ -30,4 +30,4 @@ fun loadClass(clazz: String): Class<*>? {
  * @param clazz – full class name
  * @return true if class is available via reflection
  */
-fun isClassAvailable(clazz: String): Boolean = loadClass(clazz) != null
+internal fun isClassAvailable(clazz: String): Boolean = loadClass(clazz) != null

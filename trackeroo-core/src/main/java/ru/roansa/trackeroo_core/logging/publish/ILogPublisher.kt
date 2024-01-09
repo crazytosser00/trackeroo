@@ -37,5 +37,3 @@ abstract class ILogPublisher<T> {
         } ?: throw InvalidObjectException("ILogFileWriter object is not initialized")
     }
 }
-
-interface ILogPublisherListener

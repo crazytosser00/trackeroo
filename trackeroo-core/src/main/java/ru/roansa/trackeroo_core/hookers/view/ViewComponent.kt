@@ -10,7 +10,7 @@ internal class ViewComponent(
     val tag: String? = null
 ) {
 
-    val identifier: String get() = resourceName ?: tag ?: UNKNOWN
+    internal val identifier: String get() = resourceName ?: tag ?: UNKNOWN
 
     override fun equals(other: Any?): Boolean = when {
         other === this -> true
@@ -23,13 +23,13 @@ internal class ViewComponent(
     override fun hashCode(): Int = Objects.hash(className, resourceName, tag)
 
     companion object {
-        const val UNKNOWN = "unknown"
+        internal const val UNKNOWN = "unknown"
     }
 }
 
-enum class ViewType {
+internal enum class ViewType {
     CLICKABLE, SCROLLABLE
 }
 
-fun ViewType.isClickable(): Boolean = this == ViewType.CLICKABLE
-fun ViewType.isScrollable(): Boolean = this == ViewType.SCROLLABLE
+internal fun ViewType.isClickable(): Boolean = this == ViewType.CLICKABLE
+internal fun ViewType.isScrollable(): Boolean = this == ViewType.SCROLLABLE

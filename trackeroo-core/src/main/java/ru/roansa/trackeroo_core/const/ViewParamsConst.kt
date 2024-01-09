@@ -1,6 +1,6 @@
 package ru.roansa.trackeroo_core.const
 
-object ViewParamsConst {
+internal object ViewParamsConst {
 
     const val POINT_X = "view_x"
     const val POINT_Y = "view_y"

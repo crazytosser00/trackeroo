@@ -15,7 +15,7 @@ import ru.roansa.trackeroo_core.logging.LogLevel
 import ru.roansa.trackeroo_core.logging.Logger
 
 // With blackjack! A-a-and hookers!
-object ViewHooker {
+internal object ViewHooker {
 
     const val TAG = "Trackeroo-ViewHooker"
 
@@ -23,7 +23,7 @@ object ViewHooker {
     private var userActivityTracker: UserActivityTracker? = null
 
     @JvmStatic
-    fun init(context: Context) {
+    internal fun init(context: Context) {
         gestureTargetLocators = listOf(AndroidGestureTargetLocator())
         if (context is Application) {
             userActivityTracker = UserActivityTracker(context)
@@ -40,7 +40,7 @@ object ViewHooker {
     }
 
     @JvmStatic
-    fun onViewClick(view: View, pointX: Float, pointY: Float) {
+    internal fun onViewClick(view: View, pointX: Float, pointY: Float) {
         Logger.log(
             LogEntity(
                 level = LogLevel.DEBUG,
@@ -55,7 +55,7 @@ object ViewHooker {
     }
 
     @JvmStatic
-    fun onViewScroll(
+    internal fun onViewScroll(
         view: View,
         direction: String,
         pointX: Float,
@@ -83,7 +83,7 @@ object ViewHooker {
     }
 
     @JvmStatic
-    fun onViewSwipe(view: View, direction: String) {
+    internal fun onViewSwipe(view: View, direction: String) {
         Logger.d(TagConst.VIEW_SWIPED, "view id = ${getViewId(view)}, direction = $direction")
     }
 

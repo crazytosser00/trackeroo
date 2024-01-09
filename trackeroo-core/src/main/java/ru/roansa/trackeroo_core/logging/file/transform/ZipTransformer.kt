@@ -9,12 +9,13 @@ import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-class ZipTransformer : ILogFileTransformer {
+internal class ZipTransformer : ILogFileTransformer {
 
-    val archiveName = "log_archive.zip"
+    private val archiveName = "log_archive.zip"
 
     override fun transform(target: File): File {
         //FIXME remove non-null call
+        //TODO add comments
         if (target.listFiles() == null) return target
         ZipOutputStream(BufferedOutputStream(FileOutputStream("${target.path}/$archiveName"))).use { out ->
             for (file in target.listFiles()!!) {

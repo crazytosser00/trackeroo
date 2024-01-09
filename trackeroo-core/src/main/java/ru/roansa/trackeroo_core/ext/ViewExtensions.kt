@@ -43,7 +43,7 @@ internal fun View.findTarget(
     return targetComponent
 }
 
-fun View.isScrollable(isAndroidXAvailable: Boolean): Boolean {
+internal fun View.isScrollable(isAndroidXAvailable: Boolean): Boolean {
     val isAndroidxScrollable =
         if (!isAndroidXAvailable) false
         else ScrollingView::class.java.isAssignableFrom(this.javaClass)
@@ -52,13 +52,13 @@ fun View.isScrollable(isAndroidXAvailable: Boolean): Boolean {
             || ScrollView::class.java.isAssignableFrom(this.javaClass) && this.isVisible
 }
 
-fun View.isTouchable(): Boolean = this.isClickable && this.isVisible
+internal fun View.isTouchable(): Boolean = this.isClickable && this.isVisible
 
 /**
  * Method returns human-readable name of view (according to its resource id in xml file)
  * @throws Resources.NotFoundException
  */
-fun View.resourceId(): String? {
+internal fun View.resourceId(): String? {
     val viewId = this.id
     if (viewId == View.NO_ID || isViewIdGenerated(viewId)) return null
 

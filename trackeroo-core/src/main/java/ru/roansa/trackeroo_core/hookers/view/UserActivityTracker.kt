@@ -6,7 +6,7 @@ import android.os.Bundle
 import ru.roansa.trackeroo_core.ext.isClassAvailable
 import ru.roansa.trackeroo_core.logging.Logger
 
-class UserActivityTracker(private val application: Application) :
+internal class UserActivityTracker(private val application: Application) :
     Application.ActivityLifecycleCallbacks {
     private val isAndroidXAvailable: Boolean =
         isClassAvailable("androidx.core.view.GestureDetectorCompat")
@@ -28,7 +28,7 @@ class UserActivityTracker(private val application: Application) :
         }
     }
 
-    fun bound() {
+    internal fun bound() {
         if (isAndroidXAvailable) {
             application.registerActivityLifecycleCallbacks(this)
         } else {
@@ -39,7 +39,7 @@ class UserActivityTracker(private val application: Application) :
         }
     }
 
-    fun unbound() {
+    internal fun unbound() {
         application.unregisterActivityLifecycleCallbacks(this)
     }
 
