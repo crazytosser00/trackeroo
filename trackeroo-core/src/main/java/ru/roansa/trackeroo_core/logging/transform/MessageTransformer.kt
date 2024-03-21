@@ -4,14 +4,14 @@ import ru.roansa.trackeroo_core.logging.LogEntity
 
 class MessageTransformer : ILogTransformer {
 
-//    override fun shouldTransform(logEntity: LogEntity): Boolean = logEntity.throwable != null
-
     override fun transform(previousResultString: String, logEntity: LogEntity) = logEntity.run {
         val separator =
             if (tag == null || message == null) ""
             else ": "
 
-        throwable?.localizedMessage ?: "$tag$separator$message"
+        throwable?.let {
+            "$tag$separator$message: \n ${it.stackTraceToString()}"
+        } ?: "$tag$separator$message"
     }
 
 }

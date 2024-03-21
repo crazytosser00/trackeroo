@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
 import ru.roansa.trackeroo_core.hookers.ViewHooker
+import ru.roansa.trackeroo_core.hookers.exception.DefaultUncaughtExceptionHooker
+import ru.roansa.trackeroo_core.hookers.exception.UncaughtExceptionAction
 import ru.roansa.trackeroo_core.logging.file.ILogFileWriter
 import ru.roansa.trackeroo_core.logging.file.LogFileConfig
 import ru.roansa.trackeroo_core.logging.file.text.LogTextFileWriter
@@ -16,7 +18,7 @@ import ru.roansa.trackeroo_core.logging.transform.MessageTransformer
 import ru.roansa.trackeroo_core.logging.transform.TimeTransformer
 
 //TODO add exceptions to necessary fields when it is not initialized
-//TODO add methods like default logging methods (like w(), d() etc.) but with parameters variable as parameter
+//TODO add methods like default logging methods (like w(), d() etc.) but with LogEntity parameters variable as method parameter
 object Logger {
 
     const val TAG: String = "Trackeroo-Logger"
@@ -27,6 +29,13 @@ object Logger {
     var logFileConfig: LogFileConfig = LogFileConfig.empty()
         private set
 
+    /**
+     * It's better to call this method in Application.attachBaseContext
+     * or in Application.onCreate before super.onCreate
+     *
+     * This will maximize chances that only one application Thread will be create at this moment.
+     * In other cases library cannot guarantee full log and error interceptions
+     */
     fun builder(
         context: Context,
         logDirectoryName: String = LogFileConfig.DEFAULT_DIRECTORY_NAME,
@@ -37,6 +46,13 @@ object Logger {
         return builder
     }
 
+    /**
+     * It's better to call this method in Application.attachBaseContext
+     * or in Application.onCreate before super.onCreate
+     *
+     * This will maximize chances that only one application Thread will be create at this moment.
+     * In other cases library cannot guarantee full log and error interceptions
+     */
     fun default(applicationContext: Context) {
         builder(applicationContext)
             .setLogWriter(LogTextFileWriter(logFileConfig, true))
@@ -57,15 +73,25 @@ object Logger {
         }
     }
 
+    /**
+     * Call this method whenever library must export all accumulated logs
+     */
     fun publish(): Any? =
         logFileConfig.run {
             logPublisher?.publish()
         }
 
+    /**
+     * Call this method whenever library must delete all accumulated logs
+     */
     fun clearLogs() {
         logWriter?.clear()
     }
 
+    /**
+     * This method set the lambda that triggers after any android.Util.Log method had called and
+     * library made all transformations with given log string
+     */
     fun setOnNewLogStringListener(block: (String) -> Unit) {
         onNewLogStringListener = object : OnNewLogStringListener {
             override fun onNewFormattedLogString(logString: String) {
@@ -74,6 +100,10 @@ object Logger {
         }
     }
 
+    /**
+     * This method set the listener instance that triggers after any android.Util.Log method had called and
+     * library made all transformations with given log string
+     */
     fun setOnNewLogStringListener(onNewLogStringListener: OnNewLogStringListener) {
         this.onNewLogStringListener = onNewLogStringListener
     }
@@ -240,6 +270,10 @@ object Logger {
             private set
         internal var logFormatter: LogFormatter = LogFormatter()
             private set
+        internal var uncaughtExceptionHooker: DefaultUncaughtExceptionHooker =
+            DefaultUncaughtExceptionHooker(
+                applicationContext,
+                UncaughtExceptionAction.CustomAction { _, _ -> })
 
         fun setLogWriter(logWriter: ILogFileWriter): Builder {
             this.logWriter = logWriter
@@ -256,10 +290,17 @@ object Logger {
             return this
         }
 
+        fun setUncaughtExceptionHooker(uncaughtExceptionHooker: DefaultUncaughtExceptionHooker): Builder {
+            this.uncaughtExceptionHooker = uncaughtExceptionHooker
+            Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHooker)
+            return this
+        }
+
         fun addLogTransformer(logTransformer: ILogTransformer): Builder {
             logFormatter.applyTransformer(logTransformer)
             return this
         }
+
 
     }
 
