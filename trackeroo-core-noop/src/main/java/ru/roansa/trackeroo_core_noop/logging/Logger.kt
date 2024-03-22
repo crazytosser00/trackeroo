@@ -8,6 +8,8 @@ import ru.roansa.trackeroo_core.logging.file.LogFileConfig
 import ru.roansa.trackeroo_core.logging.publish.ILogPublisher
 import ru.roansa.trackeroo_core.logging.transform.ILogTransformer
 import ru.roansa.trackeroo_core.logging.transform.LogFormatter
+import ru.roansa.trackeroo_core_noop.hookers.exception.DefaultUncaughtExceptionHooker
+import ru.roansa.trackeroo_core_noop.hookers.exception.UncaughtExceptionAction
 
 object Logger {
     var logFileConfig: LogFileConfig = LogFileConfig.empty()
@@ -21,7 +23,7 @@ object Logger {
         return Builder(context, logDirectoryName, logFileName)
     }
 
-    fun default() {
+    fun default(applicationContext: Context) {
 
     }
 
@@ -156,6 +158,8 @@ object Logger {
             private set
         internal var logFormatter: LogFormatter = LogFormatter()
             private set
+        internal var uncaughtExceptionHooker: DefaultUncaughtExceptionHooker =
+            DefaultUncaughtExceptionHooker(applicationContext, UncaughtExceptionAction.Stub)
 
         fun setLogWriter(logWriter: ILogFileWriter): Builder {
             return this
@@ -166,6 +170,10 @@ object Logger {
         }
 
         fun setLogFormatter(logFormatter: LogFormatter): Builder {
+            return this
+        }
+
+        fun setUncaughtExceptionHooker(uncaughtExceptionHooker: DefaultUncaughtExceptionHooker): Builder {
             return this
         }
 

@@ -21,6 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".OopsActivity"
+            android:exported="true">
+            <intent-filter>
+<!--                <action android:name="android.intent.action.APP_ERROR"/>-->
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -9,7 +9,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Logger.clearLogs()
 
         val tvAddLog = findViewById<AppCompatTextView>(R.id.tvAddLog)
         tvAddLog.setOnClickListener {
@@ -23,8 +22,11 @@ class MainActivity : AppCompatActivity() {
             Logger.publish()
         }
 
-        Logger.setOnNewLogStringListener {
-            tvPublish.text = it
+        val tvThrowException = findViewById<AppCompatTextView>(R.id.tvThrowException)
+        tvThrowException.setOnClickListener {
+            var a: Int? = null
+            var x = 6
+            x = x / a!!
         }
 
     }

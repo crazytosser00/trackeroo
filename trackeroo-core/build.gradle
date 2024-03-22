@@ -7,7 +7,7 @@ plugins {
 android {
     namespace 'ru.roansa.trackeroo_core'
     compileSdk 33
-    version '0.2-alpha'
+    version '0.3-pre-beta'
 
     defaultConfig {
         minSdk 21
