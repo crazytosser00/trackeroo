@@ -10,7 +10,7 @@ also third-party libraries too (like Glide, Timber, Cicerone and so on)
 **Warning!! Project currently in progress and available in early beta and may not work in some cases**
 
 #### Scheme of library
-![Trackeroo scheme](docs/assets/images/Trackeroo scheme.drawio.png)
+![Trackeroo scheme](docs/assets/images/scheme.png)
 
 ### Key features
 
