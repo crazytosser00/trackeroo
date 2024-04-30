@@ -82,7 +82,7 @@ internal class LogFilesController(private val config: LogFileConfig) {
                 .mapNotNull { file ->
                     regexpFileName
                         .findAll(file.name, 0)
-                        .map { it.groupValues[1] }.joinToString()
+                        .map { it.groupValues.getOrNull(1) ?: return@map null }.joinToString()
                         .let { index -> index.toIntOrNull()?.let { Pair(it, file) } }
                 }
                 .sortedByDescending { it.first }
