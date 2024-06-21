@@ -12,6 +12,7 @@ internal class LogFilesController(private val config: LogFileConfig) {
     private var index: Int = 1
     private val indexFormatter: String = "(%d)"
     private val regexpFileName: Regex = "^${config.logFileBaseName}[(]\\d+[)][.]?[a-z]*\$".toRegex()
+    private val regexpIndex: Regex = "(\\d+)".toRegex()
 
 
     /** Optimized collection for LIFO */
@@ -28,12 +29,7 @@ internal class LogFilesController(private val config: LogFileConfig) {
     internal fun updateLogFiles() {
         config.run {
             if (currentLogFile.length() > logFileMaxSize) {
-                val filesCount = logFiles.size
-                if (filesCount == logFilesMaxCount) {
-                    logFiles.lastOrNull()?.delete()
-                    logFiles.removeLast()
-                }
-
+                deleteOldestLogFile()
                 val newFile = createFile(true)
                 logFiles.addFirst(newFile)
             }
@@ -51,6 +47,13 @@ internal class LogFilesController(private val config: LogFileConfig) {
         if (oldLogFiles.isNotEmpty()) {
             logFiles.addAll(oldLogFiles)
             index = lastIndex
+
+            /**
+             * This code will delete oldest log files in case if there is more than max count of it
+             * In normal working mode this situation can't exist
+             * But for any case (i just may made a bug anyway) this code will be added
+             */
+            while (config.deleteOldestLogFile()) {}
         }
 
         if (logFiles.isEmpty()) {
@@ -80,7 +83,7 @@ internal class LogFilesController(private val config: LogFileConfig) {
             files
                 .filter { it.name.matches(regexpFileName) }
                 .mapNotNull { file ->
-                    regexpFileName
+                    regexpIndex
                         .findAll(file.name, 0)
                         .map { it.groupValues.getOrNull(1) ?: return@map null }.joinToString()
                         .let { index -> index.toIntOrNull()?.let { Pair(it, file) } }
@@ -92,4 +95,16 @@ internal class LogFilesController(private val config: LogFileConfig) {
         return result.map { it.second } to index
     }
 
+    /**
+     * Method returns true if max number of log files has been exceeded and oldest file has been deleted
+     * Returns false if no files has been removed
+     */
+    private fun LogFileConfig.deleteOldestLogFile(): Boolean {
+        val filesCount = logFiles.size
+        return if (filesCount >= logFilesMaxCount) {
+            logFiles.lastOrNull()?.delete()
+            logFiles.removeLast()
+            true
+        } else false
+    }
 }
