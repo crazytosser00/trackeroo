@@ -25,7 +25,7 @@ object Logger {
     private var logWriter: ILogFileWriter? = null
     private var logFormatter: LogFormatter? = null
     private var logPublisher: ILogPublisher<*>? = null
-    private var onNewLogStringListener: OnNewLogStringListener? = null
+    private var onNewLogStringListener: OnNewFormattedLogStringListener? = null
     var logFileConfig: LogFileConfig = LogFileConfig.empty()
         private set
 
@@ -92,8 +92,8 @@ object Logger {
      * This method set the lambda that triggers after any android.Util.Log method had called and
      * library made all transformations with given log string
      */
-    fun setOnNewLogStringListener(block: (String) -> Unit) {
-        onNewLogStringListener = object : OnNewLogStringListener {
+    fun setOnNewFormattedLogStringListener(block: (String) -> Unit) {
+        onNewLogStringListener = object : OnNewFormattedLogStringListener {
             override fun onNewFormattedLogString(logString: String) {
                 block(logString)
             }
@@ -104,7 +104,7 @@ object Logger {
      * This method set the listener instance that triggers after any android.Util.Log method had called and
      * library made all transformations with given log string
      */
-    fun setOnNewLogStringListener(onNewLogStringListener: OnNewLogStringListener) {
+    fun setOnNewFormattedLogStringListener(onNewLogStringListener: OnNewFormattedLogStringListener) {
         this.onNewLogStringListener = onNewLogStringListener
     }
 
@@ -304,7 +304,7 @@ object Logger {
 
     }
 
-    interface OnNewLogStringListener {
-        fun onNewFormattedLogString(logString: String) = run { }
+    interface OnNewFormattedLogStringListener {
+        fun onNewFormattedLogString(logString: String)
     }
 }

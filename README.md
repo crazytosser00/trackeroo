@@ -55,7 +55,15 @@ Next, add Trackeroo-core library dependency
 
 ```groovy
 dependencies {
-    implementation "com.github.crazytosser00:trackeroo:$library_version"
+    implementation "com.github.crazytosser00.trackeroo:trackeroo-core:$library_version"
+}
+```
+
+You may also add no-op version for non-debug builds
+
+```groovy
+dependencies {
+    implementation "com.github.crazytosser00.trackeroo:trackeroo-core-noop:$library_version"
 }
 ```
 
