@@ -36,8 +36,7 @@ class LogFileConfig(
 
         const val DEFAULT_FILE_EXT = "txt"
 
-
-        const val DEFAULT_FILE_SIZE =  52428L //5242880L
+        const val DEFAULT_FILE_SIZE = 5242880L
 
         const val DEFAULT_LOG_FILES_MAX_COUNT = 5
     }

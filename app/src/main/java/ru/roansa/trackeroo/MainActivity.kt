@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         val tvAddLog = findViewById<AppCompatTextView>(R.id.tvAddLog)
         tvAddLog.setOnClickListener {
-            for (i in 1..2) {
+            for (i in 1..1000) {
                 Logger.d("Test", "test string $i Lorem ipsum dolor sit amet")
             }
         }
