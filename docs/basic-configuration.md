@@ -1,6 +1,6 @@
 ## Basic configuration
 
-#### Init library by default
+### Init library by default
 You may use Logger.default() with basic config. In that case library will not catch exceptions only write logs.
 
 ```kotlin
@@ -14,7 +14,7 @@ class App : Application() {
 
 > You should init the library in Application.attachBaseContext() or in Application.onCreate() methods before super.onCreate()
 
-#### Init library using builder
+### Init library using builder
 If you want more flexibility you should use Logger.builder() method and customize configuration.
 ```kotlin
 class App : Application() {
@@ -59,7 +59,25 @@ addLogTransformer(DebugLevelTransformer())
 addLogTransformer(MessageTransformer())
 addLogTransformer(TimeTransformer())
 ```
-We getting this result:
+We're getting this result:
 >[ASSERT] Test string: Lorem ipsum dolor sit amet [19.03.2024 12:10:02:30]
  
-All other methods in Builder class are order insensitive
+All other methods in the Builder class are order insensitive
+
+### Post-init configuration
+
+Adding a listener to keep track of new lines written to log files
+
+```kotlin
+//Interface version
+Logger.setOnNewFormattedLogStringListener(object: Logger.OnNewFormattedLogStringListener {
+    override fun onNewFormattedLogString(logString: String) {
+        //Handle strings
+    }
+})
+
+//Lambda version
+Logger.setOnNewFormattedLogStringListener { logString ->
+    //Handle strings
+}
+```
