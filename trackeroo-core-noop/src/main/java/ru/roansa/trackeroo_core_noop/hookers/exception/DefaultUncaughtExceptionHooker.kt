@@ -1,4 +1,4 @@
-package ru.roansa.trackeroo_core_noop.hookers.exception
+package ru.roansa.trackeroo_core.hookers.exception
 
 import android.content.Context
 
