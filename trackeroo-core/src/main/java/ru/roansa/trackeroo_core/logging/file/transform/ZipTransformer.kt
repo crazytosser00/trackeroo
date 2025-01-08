@@ -11,7 +11,7 @@ import java.util.zip.ZipOutputStream
 
 internal class ZipTransformer : ILogFileTransformer {
 
-    private val archiveName = "log_archive.zip"
+    private val archiveName = "logs.zip"
 
     override fun transform(target: File): File {
         //FIXME remove non-null call
@@ -28,7 +28,7 @@ internal class ZipTransformer : ILogFileTransformer {
                 }
             }
         }
-        val zipFile = File("${target.path}/log_archive.zip")
+        val zipFile = File("${target.path}/$archiveName")
         zipFile.doIfExist {
             return this
         }
