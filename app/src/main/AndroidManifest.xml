@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -26,7 +27,6 @@
             android:name=".OopsActivity"
             android:exported="true">
             <intent-filter>
-<!--                <action android:name="android.intent.action.APP_ERROR"/>-->
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
