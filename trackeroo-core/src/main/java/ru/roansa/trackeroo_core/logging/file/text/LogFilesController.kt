@@ -20,12 +20,22 @@ internal class LogFilesController(private val config: LogFileConfig) {
 
     internal val logDirectory: File =
         with(config) { File("$filesDir${File.separator}$logDirectoryName") }
-    internal val currentLogFile: File get() = logFiles.first
+    
+    /**
+     * Возвращает текущий файл лога. Если список пуст, инициализирует его и возвращает первый файл.
+     */
+    @get:Synchronized
+    internal val currentLogFile: File 
+        get() = logFiles.firstOrNull() ?: run {
+            init()
+            logFiles.first
+        }
 
     init {
         init()
     }
 
+    @Synchronized
     internal fun updateLogFiles() {
         config.run {
             if (currentLogFile.length() > logFileMaxSize) {
@@ -36,12 +46,14 @@ internal class LogFilesController(private val config: LogFileConfig) {
         }
     }
 
+    @Synchronized
     internal fun clear() {
         logDirectory.listFiles()?.forEach { it.delete() }
         logFiles.clear()
         init()
     }
 
+    @Synchronized
     internal fun init() {
         val (oldLogFiles, lastIndex) = findLogFilesWithIndex()
         if (oldLogFiles.isNotEmpty()) {
