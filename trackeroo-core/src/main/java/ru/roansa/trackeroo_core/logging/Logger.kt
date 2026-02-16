@@ -17,6 +17,8 @@ import ru.roansa.trackeroo_core.logging.transform.ILogTransformer
 import ru.roansa.trackeroo_core.logging.transform.LogFormatter
 import ru.roansa.trackeroo_core.logging.transform.MessageTransformer
 import ru.roansa.trackeroo_core.logging.transform.TimeTransformer
+import ru.roansa.trackeroo_core.module.ITrackerooModule
+import java.util.concurrent.CopyOnWriteArrayList
 
 //TODO add exceptions to necessary fields when it is not initialized
 //TODO add methods like default logging methods (like w(), d() etc.) but with LogEntity parameters variable as method parameter
@@ -26,7 +28,8 @@ object Logger {
     private var logWriter: ILogFileWriter? = null
     private var logFormatter: LogFormatter? = null
     private var logPublisher: ILogPublisher<*>? = null
-    private var onNewLogStringListener: OnNewFormattedLogStringListener? = null
+    private val logStringListeners = CopyOnWriteArrayList<OnNewFormattedLogStringListener>()
+    private val modules = mutableListOf<ITrackerooModule>()
     var logFileConfig: LogFileConfig = LogFileConfig.empty()
         private set
 
@@ -72,6 +75,8 @@ object Logger {
         this@Logger.logWriter?.let {
             this@Logger.logPublisher?.setLogWriter(it)
         }
+        this@Logger.modules.addAll(this.modules)
+        this@Logger.modules.forEach { it.start() }
     }
 
     /**
@@ -96,30 +101,57 @@ object Logger {
     fun getDebugStatus(): DebugInfo? = logWriter?.getDebugInfo()
 
     /**
-     * This method set the lambda that triggers after any android.Util.Log method had called and
-     * library made all transformations with given log string
+     * Добавляет слушателя новых отформатированных строк лога.
+     *
+     * @param listener слушатель для добавления
      */
-    fun setOnNewFormattedLogStringListener(block: (String) -> Unit) {
-        onNewLogStringListener = object : OnNewFormattedLogStringListener {
-            override fun onNewFormattedLogString(logString: String) {
-                block(logString)
-            }
-        }
+    fun addOnNewFormattedLogStringListener(listener: OnNewFormattedLogStringListener) {
+        logStringListeners.add(listener)
     }
 
     /**
-     * This method set the listener instance that triggers after any android.Util.Log method had called and
-     * library made all transformations with given log string
+     * Удаляет ранее добавленного слушателя.
+     *
+     * @param listener слушатель для удаления
      */
+    fun removeOnNewFormattedLogStringListener(listener: OnNewFormattedLogStringListener) {
+        logStringListeners.remove(listener)
+    }
+
+    /**
+     * Останавливает все зарегистрированные модули.
+     */
+    fun stopAllModules() {
+        modules.forEach { it.stop() }
+    }
+
+    @Deprecated(
+        "Use addOnNewFormattedLogStringListener instead",
+        ReplaceWith("addOnNewFormattedLogStringListener(listener)")
+    )
+    fun setOnNewFormattedLogStringListener(block: (String) -> Unit) {
+        logStringListeners.clear()
+        addOnNewFormattedLogStringListener(object : OnNewFormattedLogStringListener {
+            override fun onNewFormattedLogString(logString: String) {
+                block(logString)
+            }
+        })
+    }
+
+    @Deprecated(
+        "Use addOnNewFormattedLogStringListener instead",
+        ReplaceWith("addOnNewFormattedLogStringListener(onNewLogStringListener)")
+    )
     fun setOnNewFormattedLogStringListener(onNewLogStringListener: OnNewFormattedLogStringListener) {
-        this.onNewLogStringListener = onNewLogStringListener
+        logStringListeners.clear()
+        addOnNewFormattedLogStringListener(onNewLogStringListener)
     }
 
     @JvmStatic
     fun v(tag: String?, message: String): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.VERBOSE, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.v(tag, message)
     }
 
@@ -128,7 +160,7 @@ object Logger {
         val logString =
             logFormatter?.transform(LogEntity(LogLevel.VERBOSE, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.v(tag, message, throwable)
     }
 
@@ -136,7 +168,7 @@ object Logger {
     fun d(tag: String?, message: String): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.DEBUG, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.d(tag, message)
     }
 
@@ -144,7 +176,7 @@ object Logger {
     fun d(tag: String?, message: String?, throwable: Throwable?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.DEBUG, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.d(tag, message, throwable)
     }
 
@@ -152,7 +184,7 @@ object Logger {
     fun i(tag: String?, message: String): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.INFO, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.i(tag, message)
     }
 
@@ -160,7 +192,7 @@ object Logger {
     fun i(tag: String?, message: String?, throwable: Throwable?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.INFO, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.i(tag, message, throwable)
     }
 
@@ -168,7 +200,7 @@ object Logger {
     fun w(tag: String?, message: String): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.WARNING, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.w(tag, message)
     }
 
@@ -176,7 +208,7 @@ object Logger {
     fun w(tag: String?, throwable: Throwable?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.WARNING, tag, null, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.w(tag, throwable)
     }
 
@@ -185,7 +217,7 @@ object Logger {
         val logString =
             logFormatter?.transform(LogEntity(LogLevel.WARNING, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.w(tag, message, throwable)
     }
 
@@ -193,7 +225,7 @@ object Logger {
     fun e(tag: String?, message: String): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ERROR, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.e(tag, message)
     }
 
@@ -201,7 +233,7 @@ object Logger {
     fun e(tag: String?, message: String?, throwable: Throwable?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ERROR, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.e(tag, message, throwable)
     }
 
@@ -209,7 +241,7 @@ object Logger {
     fun wtf(tag: String?, message: String?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ASSERT, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.wtf(tag, message)
     }
 
@@ -217,7 +249,7 @@ object Logger {
     fun wtf(tag: String?, throwable: Throwable): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ASSERT, tag, null, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.wtf(tag, throwable)
     }
 
@@ -225,7 +257,7 @@ object Logger {
     fun wtf(tag: String?, message: String?, throwable: Throwable?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ASSERT, tag, message, throwable))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.w(tag, message, throwable)
     }
 
@@ -233,7 +265,7 @@ object Logger {
     fun log(logEntity: LogEntity): Int {
         val logString = logFormatter?.transform(logEntity)
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         val priority = when (logEntity.level) {
             LogLevel.VERBOSE -> Log.VERBOSE
             LogLevel.DEBUG -> Log.DEBUG
@@ -249,8 +281,19 @@ object Logger {
     fun println(priority: Int, tag: String?, message: String?): Int {
         val logString = logFormatter?.transform(LogEntity(LogLevel.ASSERT, tag, message))
         logWriter?.write(logString)
-        logString?.let { onNewLogStringListener?.onNewFormattedLogString(it) }
+        logString?.let { notifyListeners(it) }
         return Log.println(priority, tag, message.orEmpty())
+    }
+
+    /**
+     * Рассылает отформатированную строку лога всем зарегистрированным слушателям.
+     *
+     * @param logString отформатированная строка лога
+     */
+    private fun notifyListeners(logString: String) {
+        for (listener in logStringListeners) {
+            listener.onNewFormattedLogString(logString)
+        }
     }
 
     class Builder(
@@ -308,7 +351,18 @@ object Logger {
             return this
         }
 
+        internal val modules: MutableList<ITrackerooModule> = mutableListOf()
 
+        /**
+         * Добавляет модуль, который будет запущен при вызове build().
+         *
+         * @param module модуль для добавления
+         * @return текущий Builder
+         */
+        fun addModule(module: ITrackerooModule): Builder {
+            modules.add(module)
+            return this
+        }
     }
 
     interface OnNewFormattedLogStringListener {
