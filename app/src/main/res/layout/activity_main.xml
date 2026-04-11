@@ -83,7 +83,15 @@
                         android:id="@+id/tvFilesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Files count: 0" />
+                        android:text="Files count: 0"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvServerUrl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Log server: -"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/btnRefreshStatus"
@@ -285,6 +293,20 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp" />
+
+                    <Button
+                        android:id="@+id/btnStartServer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Start Log Server"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/btnStopServer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Stop Log Server"
+                        android:layout_marginBottom="8dp" />
 
                     <Button
                         android:id="@+id/btnPublish"

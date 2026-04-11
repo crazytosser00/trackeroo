@@ -52,6 +52,7 @@ dependencies {
 
     implementation project(":trackeroo-core")
     implementation project(":trackeroo-telegram-publisher")
+    implementation project(":trackeroo-logserver")
 //    api "ru.roansa.trackeroo_core:trackeroo-core:0.1.2-alpha"
 //    implementation project(":trackeroo-sentry-publisher")
 //    implementation libs.trackeroo.core

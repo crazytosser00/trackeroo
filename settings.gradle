@@ -20,12 +20,14 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('trackerooCoreVer', '0.3.3-pre-beta')
+            version('trackerooCoreVer', '0.4.1-pre-beta')
             version('trackerooSentryPublisherVer', '1.0')
+            version('trackerooLogServerVer', '1.0')
             version('sentryVer', '6.11.0')
 
             library('trackeroo-core', 'com.github.crazytosser00.trackeroo', 'trackeroo-core').versionRef('trackerooCoreVer')
             library('trackeroo-sentryPublisher', 'com.github.crazytosser00.trackeroo', 'trackeroo-sentry-publisher').versionRef('trackerooCoreVer')
+            library('trackeroo-logServer', 'com.github.crazytosser00.trackeroo', 'trackeroo-logserver').versionRef('trackerooCoreVer')
             library('sentry', 'io.sentry', 'sentry-android').versionRef('sentryVer')
         }
     }
@@ -37,3 +39,5 @@ include ':trackeroo-core'
 include ':trackeroo-sentry-publisher'
 include ':trackeroo-core-noop'
 include ':trackeroo-telegram-publisher'
+include ':trackeroo-logserver'
+include ':trackeroo-logserver-noop'
