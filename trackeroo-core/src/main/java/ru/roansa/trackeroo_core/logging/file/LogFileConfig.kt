@@ -1,5 +1,7 @@
 package ru.roansa.trackeroo_core.logging.file
 
+import java.io.File
+
 //FIXME need new description for param logFileBaseName and logFileExtension
 /**
  * @param filesDir app data directory @see android.content.Context.getFilesDir()
@@ -16,6 +18,14 @@ class LogFileConfig(
     val logFileMaxSize: Long = DEFAULT_FILE_SIZE,
     val logFilesMaxCount: Int = DEFAULT_LOG_FILES_MAX_COUNT
 ) {
+
+    /**
+     * Полный путь к директории с логами
+     * @return File объект директории логов
+     */
+    val logDirectory: File
+        get() = File(filesDir, logDirectoryName)
+
     companion object {
 
         fun empty(): LogFileConfig = LogFileConfig("")

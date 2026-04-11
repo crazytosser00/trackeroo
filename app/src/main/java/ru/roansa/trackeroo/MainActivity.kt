@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnRefreshFiles: Button
     private lateinit var logFileAdapter: LogFileAdapter
 
+    private lateinit var tvServerUrl: TextView
+
+    private lateinit var btnStartServer: Button
+    private lateinit var btnStopServer: Button
+
     private lateinit var btnPublish: Button
     private lateinit var btnClearLogs: Button
     private lateinit var btnThrowException: Button
@@ -57,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
+        updateServerUrl()
     }
 
     private fun initViews() {
@@ -80,6 +86,11 @@ class MainActivity : AppCompatActivity() {
 
         rvLogFiles = findViewById(R.id.rvLogFiles)
         btnRefreshFiles = findViewById(R.id.btnRefreshFiles)
+
+        tvServerUrl = findViewById(R.id.tvServerUrl)
+
+        btnStartServer = findViewById(R.id.btnStartServer)
+        btnStopServer = findViewById(R.id.btnStopServer)
 
         btnPublish = findViewById(R.id.btnPublish)
         btnClearLogs = findViewById(R.id.btnClearLogs)
@@ -118,6 +129,7 @@ class MainActivity : AppCompatActivity() {
         btnRefreshStatus.setOnClickListener {
             viewModel.refreshStatus()
             viewModel.refreshLogFiles()
+            updateServerUrl()
         }
 
         btnStartAutoLog.setOnClickListener {
@@ -142,6 +154,16 @@ class MainActivity : AppCompatActivity() {
 
         btnRefreshFiles.setOnClickListener {
             viewModel.refreshLogFiles()
+        }
+
+        btnStartServer.setOnClickListener {
+            App.logHttpServer.start()
+            updateServerUrl()
+        }
+
+        btnStopServer.setOnClickListener {
+            App.logHttpServer.stop()
+            updateServerUrl()
         }
 
         btnPublish.setOnClickListener {
@@ -219,6 +241,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    /**
+     * Обновляет отображение URL лог-сервера.
+     * Получает адрес из {@link App.logHttpServer}.
+     */
+    private fun updateServerUrl() {
+        val url = App.logHttpServer.getServerUrl()
+        tvServerUrl.text = "Log server: ${url ?: "-"}"
     }
 
     private fun formatFileSize(bytes: Long): String {

@@ -5,11 +5,13 @@ import android.content.ContextWrapper
 import android.util.Log
 import ru.roansa.trackeroo_core.hookers.exception.DefaultUncaughtExceptionHooker
 import ru.roansa.trackeroo_core.hookers.exception.UncaughtExceptionAction
+import ru.roansa.trackeroo_core.logging.file.DebugInfo
 import ru.roansa.trackeroo_core.logging.file.ILogFileWriter
 import ru.roansa.trackeroo_core.logging.file.LogFileConfig
 import ru.roansa.trackeroo_core.logging.publish.ILogPublisher
 import ru.roansa.trackeroo_core.logging.transform.ILogTransformer
 import ru.roansa.trackeroo_core.logging.transform.LogFormatter
+import ru.roansa.trackeroo_core.module.ITrackerooModule
 
 object Logger {
     var logFileConfig: LogFileConfig = LogFileConfig.empty()
@@ -39,11 +41,50 @@ object Logger {
 
     }
 
-    fun setOnNewLogStringListener(block: (String) -> Unit) {
+    /**
+     * Возвращает диагностическую информацию о состоянии логирования
+     * @return DebugInfo с информацией о состоянии, или null если диагностика недоступна
+     */
+    fun getDebugStatus(): DebugInfo? = null
+
+    /**
+     * Добавляет слушателя новых отформатированных строк лога.
+     *
+     * @param listener слушатель для добавления
+     */
+    fun addOnNewFormattedLogStringListener(listener: OnNewFormattedLogStringListener) {
 
     }
 
-    fun setOnNewLogStringListener(onNewLogStringListener: OnNewLogStringListener) {
+    /**
+     * Удаляет ранее добавленного слушателя.
+     *
+     * @param listener слушатель для удаления
+     */
+    fun removeOnNewFormattedLogStringListener(listener: OnNewFormattedLogStringListener) {
+
+    }
+
+    /**
+     * Останавливает все зарегистрированные модули.
+     */
+    fun stopAllModules() {
+
+    }
+
+    @Deprecated(
+        "Use addOnNewFormattedLogStringListener instead",
+        ReplaceWith("addOnNewFormattedLogStringListener(listener)")
+    )
+    fun setOnNewFormattedLogStringListener(block: (String) -> Unit) {
+
+    }
+
+    @Deprecated(
+        "Use addOnNewFormattedLogStringListener instead",
+        ReplaceWith("addOnNewFormattedLogStringListener(onNewFormattedLogStringListener)")
+    )
+    fun setOnNewFormattedLogStringListener(onNewFormattedLogStringListener: OnNewFormattedLogStringListener) {
 
     }
 
@@ -180,10 +221,19 @@ object Logger {
         fun addLogTransformer(logTransformer: ILogTransformer): Builder {
             return this
         }
+
+        /**
+         * Добавляет модуль, который будет запущен при вызове build().
+         *
+         * @param module модуль для добавления
+         * @return текущий Builder
+         */
+        fun addModule(module: ITrackerooModule): Builder {
+            return this
+        }
     }
 
-    interface OnNewLogStringListener {
+    interface OnNewFormattedLogStringListener {
         fun onNewFormattedLogString(logString: String)
     }
-
 }
