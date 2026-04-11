@@ -6,6 +6,7 @@ import android.util.Log
 import ru.roansa.trackeroo_core.hookers.ViewHooker
 import ru.roansa.trackeroo_core.hookers.exception.DefaultUncaughtExceptionHooker
 import ru.roansa.trackeroo_core.hookers.exception.UncaughtExceptionAction
+import ru.roansa.trackeroo_core.logging.file.DebugInfo
 import ru.roansa.trackeroo_core.logging.file.ILogFileWriter
 import ru.roansa.trackeroo_core.logging.file.LogFileConfig
 import ru.roansa.trackeroo_core.logging.file.text.LogTextFileWriter
@@ -87,6 +88,12 @@ object Logger {
     fun clearLogs() {
         logWriter?.clear()
     }
+
+    /**
+     * Возвращает диагностическую информацию о состоянии логирования
+     * @return DebugInfo с информацией о состоянии, или null если диагностика недоступна
+     */
+    fun getDebugStatus(): DebugInfo? = logWriter?.getDebugInfo()
 
     /**
      * This method set the lambda that triggers after any android.Util.Log method had called and

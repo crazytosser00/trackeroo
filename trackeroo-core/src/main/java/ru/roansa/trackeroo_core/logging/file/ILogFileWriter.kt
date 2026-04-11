@@ -10,4 +10,10 @@ abstract class ILogFileWriter(private val logFileConfig: LogFileConfig) {
 
     abstract fun write(string: String?)
     abstract fun clear()
+
+    /**
+     * Возвращает диагностическую информацию о состоянии логирования
+     * @return DebugInfo с информацией о состоянии, или null если диагностика недоступна
+     */
+    open fun getDebugInfo(): DebugInfo? = null
 }
